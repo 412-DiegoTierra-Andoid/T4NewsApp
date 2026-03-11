@@ -140,18 +140,10 @@ fun PantallaNoticias() {
 fun CardGrande(noticia: Noticia) {
     Box(
         modifier = Modifier
-            .size(width = 280.dp, height = 210.dp)
+            .size(width = 280.dp, height = 150.dp)
             // Bordes muy redondeados
             .clip(RoundedCornerShape(32.dp))
     ) {
-        // Imagen de fondo
-        Image(
-            painter = painterResource(id = noticia.imagen),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop // Corta la imagen para llenar el cuadro
-        )
-
         // 7. EL FILTRO MORADO: Un cuadro morado semitransparente sobre la imagen
         Box(
             modifier = Modifier
