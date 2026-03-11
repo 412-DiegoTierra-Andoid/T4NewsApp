@@ -3,171 +3,228 @@ package com.example.t4_newsapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// 1. Modelo de datos simple
-data class Noticia(val titulo: String, val fecha: String, val color: Color)
+// 1. MODELO DE DATOS (Mismo que el original)
+data class Noticia(val titulo: String, val fecha: String, val imagen: Int)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             Surface(modifier = Modifier.fillMaxSize(), color = Color.White) {
+                // Llamamos a la pantalla principal
                 PantallaNoticias()
             }
         }
     }
 }
 
+// 2. COLOR PERSONALIZADO (Definimos el color morado una vez)
+val MiColorMorado = Color(0xFF6E56F8)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaNoticias() {
-    // Datos de ejemplo
+    // 3. DATOS DE PRUEBA (Asumiendo que tienes estas imágenes en res/drawable)
     val listaNoticias = listOf(
-        Noticia("El presidente de EE.UU. no muestra signos...", "febrero 08 - 2024", Color(0xFF6E56F8)),
-        Noticia("Bañarse en la piscina de Cleopatra", "febrero 09 - 2024", Color(0xFF6E56F8))
+        Noticia("El presidente de EE.UU. no muestra signos de arrepentimiento...", "febrero 08 - 2024", R.drawable.trump),
+        Noticia("Bañarse en la piscina del desierto de Cleopatra", "febrero 09 - 2024", R.drawable.cleopatra),
+        Noticia("Gigantes tecnológicos e IA", "febrero 10 - 2024", R.drawable.ia),
+        Noticia("El rover de Marte envía datos", "febrero 11 - 2024", R.drawable.marte)
     )
 
-    Column(
+    // 4. ESTRUCTURA PRINCIPAL (Columna con scroll)
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp)
+            .padding(horizontal = 20.dp, vertical = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp) // Espacio entre cada sección
     ) {
-        // --- BUSCADOR (TopBar) ---
-        OutlinedTextField(
-            value = "",
-            onValueChange = {},
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(50.dp)),
-            placeholder = { Text("Buscar") },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-            // ASÍ SE PONE AHORA EN MATERIAL 3:
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = Color.LightGray,
-                focusedBorderColor = Color(0xFF6E56F8)
+
+        // --- SECCIÓN: BUSCADOR ---
+        item {
+            OutlinedTextField(
+                value = "",
+                onValueChange = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    // Redondeamos los bordes completamente
+                    .clip(RoundedCornerShape(50.dp)),
+                placeholder = { Text("Buscar", color = Color.Gray) },
+                // 5. ESTILO DEL BUSCADOR: Color morado para el borde
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = MiColorMorado,
+                    focusedBorderColor = MiColorMorado
+                )
             )
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // --- TABS (Row) ---
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            Text("Noticias", fontWeight = FontWeight.Bold, color = Color.Black)
-            Text("Eventos", color = Color.LightGray) // Deshabilitado
-            Text("Clima", color = Color.LightGray)  // Deshabilitado
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // --- CONTENIDO CON SCROLL ---
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-
-            // SECCIÓN: Ultimas noticias
-            item {
-                Text("Ultimas noticias", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(8.dp))
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    items(listaNoticias) { noticia ->
-                        CardGrande(noticia)
-                    }
+        // --- SECCIÓN: PESTAÑAS (Noticias, Eventos, Clima) ---
+        item {
+            Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+                // Pestaña "Noticias" (Seleccionada)
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("Noticias", fontWeight = FontWeight.ExtraBold, fontSize = 24.sp, color = Color.Black)
+                    // La línea morada debajo
+                    Box(Modifier.width(40.dp).height(4.dp).background(MiColorMorado))
                 }
+                // Pestañas no seleccionadas
+                Text("Eventos", color = Color.LightGray, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text("Clima", color = Color.LightGray, fontSize = 24.sp, fontWeight = FontWeight.Bold)
             }
+        }
 
-            // SECCIÓN: Alrededor del mundo
-            item {
-                Text("Alrededor del mundo", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(8.dp))
-            }
+        // --- SECCIÓN: ÚLTIMAS NOTICIAS (Horizontal) ---
+        item {
+            Text("Últimas noticias", fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
+            Spacer(modifier = Modifier.height(12.dp))
 
-            // Grid de 2 columnas (Simulado con Rows para evitar conflictos de scroll)
-            items(listaNoticias.chunked(2)) { par ->
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    par.forEach { noticia ->
-                        CardPequeña(noticia, Modifier.weight(1f))
-                    }
+            // Fila deslizable
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                items(listaNoticias) { noticia ->
+                    CardGrande(noticia)
                 }
             }
         }
+
+        // --- SECCIÓN: ALREDEDOR DEL MUNDO (Título) ---
+        item {
+            Text("Alrededor del mundo", fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
+        }
+
+        // --- SECCIÓN: GRILLA DE NOTICIAS (2x2) ---
+        // Aquí simplificamos el 'chunked'. Simplemente creamos las filas manualmente.
+        // Fila 1
+        item {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                // Usamos Modifier.weight(1f) para que cada tarjeta ocupe la mitad
+                CardPequeña(listaNoticias[0], Modifier.weight(1f))
+                CardPequeña(listaNoticias[1], Modifier.weight(1f))
+            }
+        }
+        // Fila 2
+        item {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                CardPequeña(listaNoticias[2], Modifier.weight(1f))
+                CardPequeña(listaNoticias[3], Modifier.weight(1f))
+            }
+        }
+
+        // Espacio final para que no quede pegado abajo
+        item { Spacer(modifier = Modifier.height(16.dp)) }
     }
 }
 
+// 6. COMPONENTE: TARJETA GRANDE CON TEXTO ENCIMA Y FILTRO MORADO
 @Composable
 fun CardGrande(noticia: Noticia) {
     Box(
         modifier = Modifier
-            .size(width = 300.dp, height = 150.dp) // Ajustado para dar más espacio al texto
-            .clip(RoundedCornerShape(32.dp))      // Bordes más redondeados como en la imagen
-            .background(Color(0xFF6E56F8))         // El morado exacto de la imagen
-            .padding(24.dp)                       // Más padding para que el texto no toque los bordes
+            .size(width = 280.dp, height = 210.dp)
+            // Bordes muy redondeados
+            .clip(RoundedCornerShape(32.dp))
     ) {
+        // Imagen de fondo
+        Image(
+            painter = painterResource(id = noticia.imagen),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop // Corta la imagen para llenar el cuadro
+        )
+
+        // 7. EL FILTRO MORADO: Un cuadro morado semitransparente sobre la imagen
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MiColorMorado.copy(alpha = 0.6f)) // alpha es la transparencia (0.0 a 1.0)
+        )
+
+        // Contenedor para el texto (abajo a la izquierda)
         Column(
-            modifier = Modifier.align(Alignment.BottomStart),
-            verticalArrangement = Arrangement.spacedBy(8.dp) // Espacio entre el título y la fecha
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(20.dp)
         ) {
             Text(
                 text = noticia.titulo,
                 color = Color.White,
-                fontSize = 22.sp,                // Fuente más grande
-                fontWeight = FontWeight.ExtraBold, // Letra más gruesa
-                lineHeight = 28.sp,              // Mejor interlineado para lectura
-                maxLines = 4,                    // Permitir más líneas si es necesario
-                overflow = TextOverflow.Ellipsis
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 3, // Máximo 3 líneas de texto
+                overflow = TextOverflow.Ellipsis // Pone "..." si el texto es muy largo
             )
-
             Text(
                 text = noticia.fecha,
-                color = Color.White.copy(alpha = 0.9f), // Un poco más brillante
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold
+                color = Color.White.copy(alpha = 0.8f),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium
             )
         }
     }
 }
 
+// 8. COMPONENTE: TARJETA PEQUEÑA CON ETIQUETA GRIS ABAJO
 @Composable
 fun CardPequeña(noticia: Noticia, modifier: Modifier) {
     Box(
+        // modifier viene de afuera para controlar el tamaño (weight)
         modifier = modifier
-            .height(140.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFFE0E0E0)) // Fondo gris simulando imagen
+            .aspectRatio(0.9f) // Proporción: casi un cuadrado, un poco más alto
+            .clip(RoundedCornerShape(24.dp)) // Bordes redondeados
     ) {
-        // Texto sobre fondo gris claro
-        Box(
+        // Imagen de fondo
+        Image(
+            painter = painterResource(id = noticia.imagen),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        // 9. LA ETIQUETA GRIS: Un rectángulo gris abajo para el texto
+        Surface(
             modifier = Modifier
-                .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .background(Color.LightGray.copy(alpha = 0.6f))
-                .padding(8.dp)
+                .fillMaxWidth(),
+            color = Color(0xFFD9D9D9).copy(alpha = 0.9f), // Color gris clarito casi opaco
+            // Solo redondeamos las esquinas superiores de la etiqueta
+            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
         ) {
-            Text(noticia.titulo, fontSize = 11.sp, fontWeight = FontWeight.Bold, maxLines = 2)
+            Text(
+                text = noticia.titulo,
+                modifier = Modifier.padding(12.dp),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                maxLines = 3,
+                lineHeight = 16.sp // Espacio entre líneas de texto
+            )
         }
     }
 }
+
+// 10. PREVIEW: Para ver cómo queda sin ejecutar el emulador
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewPantallaNoticias() {
-    // Aquí envolvemos la pantalla en el tema de tu app
-    // para que se vea con los colores correctos
-    Surface(color = Color.White) {
-        PantallaNoticias()
-    }
+    PantallaNoticias()
 }
