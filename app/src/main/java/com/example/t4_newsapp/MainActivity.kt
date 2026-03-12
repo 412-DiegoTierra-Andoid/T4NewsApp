@@ -51,25 +51,20 @@ fun PantallaNoticias() {
         Noticia("Gigantes tecnológicos e IA", "febrero 10 - 2024", R.drawable.ia),
         Noticia("El rover de Marte envía datos", "febrero 11 - 2024", R.drawable.marte)
     )
-    // 4. ESTRUCTURA PRINCIPAL (Columna con scroll)
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 20.dp, vertical = 10.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp) // Espacio entre cada sección
     ) {
-
-        // --- SECCIÓN: BUSCADOR ---
         item {
             OutlinedTextField(
                 value = "",
                 onValueChange = {},
                 modifier = Modifier
                     .fillMaxWidth()
-                    // Redondeamos los bordes completamente
                     .clip(RoundedCornerShape(50.dp)),
                 placeholder = { Text("Buscar", color = Color.Gray) },
-                // 5. ESTILO DEL BUSCADOR: Color morado para el borde
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = MiColorMorado,
                     focusedBorderColor = MiColorMorado
@@ -77,20 +72,60 @@ fun PantallaNoticias() {
             )
         }
 
-        // --- SECCIÓN: PESTAÑAS (Noticias, Eventos, Clima) ---
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
-                // Pestaña "Noticias" (Seleccionada)
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("Noticias", fontWeight = FontWeight.ExtraBold, fontSize = 24.sp, color = Color.Black)
-                    // La línea morada debajo
                     Box(Modifier.width(40.dp).height(4.dp).background(MiColorMorado))
                 }
-                // Pestañas no seleccionadas
                 Text("Eventos", color = Color.LightGray, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                 Text("Clima", color = Color.LightGray, fontSize = 24.sp, fontWeight = FontWeight.Bold)
             }
         }
+
+
+        // --- SECCIÓN: ÚLTIMAS NOTICIAS (Horizontal) ---
+        item {
+            Text("Últimas noticias", fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Fila deslizable
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                items(listaNoticias) { noticia ->
+                    CardGrande(noticia)
+                }
+            }
+        }
+
+        // --- SECCIÓN: ALREDEDOR DEL MUNDO (Título) ---
+        item {
+            Text("Alrededor del mundo", fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
+        }
+
+        // --- SECCIÓN: GRILLA DE NOTICIAS (2x2) ---
+        // Aquí simplificamos el 'chunked'. Simplemente creamos las filas manualmente.
+        // Fila 1
+        item {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                // Usamos Modifier.weight(1f) para que cada tarjeta ocupe la mitad
+                CardPequeña(listaNoticias[0], Modifier.weight(1f))
+                CardPequeña(listaNoticias[1], Modifier.weight(1f))
+            }
+        }
+        // Fila 2
+        item {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                CardPequeña(listaNoticias[2], Modifier.weight(1f))
+                CardPequeña(listaNoticias[3], Modifier.weight(1f))
+            }
+        }
+
+        // Espacio final para que no quede pegado abajo
+        item { Spacer(modifier = Modifier.height(16.dp)) }
+    }
+}
+
+
 
 
 
