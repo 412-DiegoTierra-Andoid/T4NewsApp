@@ -125,6 +125,45 @@ fun PantallaNoticias() {
     }
 }
 
+// 6. COMPONENTE: TARJETA GRANDE CON TEXTO ENCIMA Y FILTRO MORADO
+@Composable
+fun CardGrande(noticia: Noticia) {
+    Box(
+        modifier = Modifier
+            .size(width = 280.dp, height = 150.dp)
+            // Bordes muy redondeados
+            .clip(RoundedCornerShape(32.dp))
+    ) {
+        // 7. EL FILTRO MORADO: Un cuadro morado semitransparente sobre la imagen
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MiColorMorado.copy(alpha = 0.6f)) // alpha es la transparencia (0.0 a 1.0)
+        )
+
+        // Contenedor para el texto (abajo a la izquierda)
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(20.dp)
+        ) {
+            Text(
+                text = noticia.titulo,
+                color = Color.White,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 3, // Máximo 3 líneas de texto
+                overflow = TextOverflow.Ellipsis // Pone "..." si el texto es muy largo
+            )
+            Text(
+                text = noticia.fecha,
+                color = Color.White.copy(alpha = 0.8f),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+}
 
 
 
