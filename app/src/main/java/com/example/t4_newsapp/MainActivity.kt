@@ -134,14 +134,10 @@ fun CardGrande(noticia: Noticia) {
             // Bordes muy redondeados
             .clip(RoundedCornerShape(32.dp))
     ) {
-        // 7. EL FILTRO MORADO: Un cuadro morado semitransparente sobre la imagen
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MiColorMorado.copy(alpha = 0.6f)) // alpha es la transparencia (0.0 a 1.0)
         )
-
-        // Contenedor para el texto (abajo a la izquierda)
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
@@ -152,8 +148,8 @@ fun CardGrande(noticia: Noticia) {
                 color = Color.White,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                maxLines = 3, // Máximo 3 líneas de texto
-                overflow = TextOverflow.Ellipsis // Pone "..." si el texto es muy largo
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = noticia.fecha,
@@ -165,6 +161,39 @@ fun CardGrande(noticia: Noticia) {
     }
 }
 
+@Composable
+fun CardPequeña(noticia: Noticia, modifier: Modifier) {
+    Box(
+        modifier = modifier
+            .aspectRatio(0.9f)
+            .clip(RoundedCornerShape(24.dp))
+    ) {
+        Image(
+            painter = painterResource(id = noticia.imagen),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        Surface(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth(),
+            color = Color(0xFFD9D9D9).copy(alpha = 0.9f),
+            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+        ) {
+            Text(
+                text = noticia.titulo,
+                modifier = Modifier.padding(12.dp),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                maxLines = 3,
+                lineHeight = 16.sp // Espacio entre líneas de texto
+            )
+        }
+    }
+}
 
 
 
