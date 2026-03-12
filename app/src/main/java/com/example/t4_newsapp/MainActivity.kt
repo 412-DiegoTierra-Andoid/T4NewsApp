@@ -38,6 +38,20 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+// 2. COLOR PERSONALIZADO (Definimos el color morado una vez)
+val MiColorMorado = Color(0xFF6E56F8)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PantallaNoticias() {
+    // 3. DATOS DE PRUEBA (Asumiendo que tienes estas imágenes en res/drawable)
+    val listaNoticias = listOf(
+        Noticia("El presidente de EE.UU. no muestra signos de arrepentimiento...", "febrero 08 - 2024", R.drawable.trump),
+        Noticia("Bañarse en la piscina del desierto de Cleopatra", "febrero 09 - 2024", R.drawable.cleopatra),
+        Noticia("Gigantes tecnológicos e IA", "febrero 10 - 2024", R.drawable.ia),
+        Noticia("El rover de Marte envía datos", "febrero 11 - 2024", R.drawable.marte)
+    )
+
 
 
 @Preview(showBackground = true, showSystemUi = true)
